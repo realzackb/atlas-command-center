@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Bot,
   ListTodo,
+  CalendarDays,
   Plug,
   Search,
   FileText,
