@@ -75,7 +75,11 @@ export default function OrgChart() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editingNode, setEditingNode] = useState<OrgNode | null>(null);
 
-  const sensors = useSensors(
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
+  }, [nodes]);
+
+
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
