@@ -30,6 +30,7 @@ const navItems = [
   { title: "Agents", url: "/agents", icon: Bot },
   { title: "Org Chart", url: "/org-chart", icon: Network },
   { title: "Tasks", url: "/tasks", icon: ListTodo },
+  { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Research", url: "/research", icon: Search },
   { title: "Content", url: "/content", icon: FileText },
   { title: "Integrations", url: "/integrations", icon: Plug },
