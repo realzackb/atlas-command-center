@@ -6,6 +6,7 @@ import {
   Plug,
   Search,
   FileText,
+  FileStack,
   Settings,
   Zap,
   Network,
