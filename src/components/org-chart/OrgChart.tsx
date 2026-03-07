@@ -79,7 +79,7 @@ export default function OrgChart() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
   }, [nodes]);
 
-
+  const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
