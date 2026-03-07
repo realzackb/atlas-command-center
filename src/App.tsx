@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Agents from "./pages/Agents";
 import OrgChartPage from "./pages/OrgChartPage";
 import Tasks from "./pages/Tasks";
+import CalendarPage from "./pages/CalendarPage";
 import Integrations from "./pages/Integrations";
 import Research from "./pages/Research";
 import Content from "./pages/Content";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/agents" element={<Agents />} />
             <Route path="/org-chart" element={<OrgChartPage />} />
             <Route path="/tasks" element={<Tasks />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/research" element={<Research />} />
             <Route path="/content" element={<Content />} />
