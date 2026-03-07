@@ -27,6 +27,7 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Agents", url: "/agents", icon: Bot },
+  { title: "Org Chart", url: "/org-chart", icon: Network },
   { title: "Tasks", url: "/tasks", icon: ListTodo },
   { title: "Research", url: "/research", icon: Search },
   { title: "Content", url: "/content", icon: FileText },
