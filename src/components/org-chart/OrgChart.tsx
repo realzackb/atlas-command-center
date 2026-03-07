@@ -18,7 +18,7 @@ import { AddAgentDialog } from "./AddAgentDialog";
 import { EditAgentDialog } from "./EditAgentDialog";
 import type { OrgNode } from "./types";
 
-const initialNodes: OrgNode[] = [
+const defaultNodes: OrgNode[] = [
   {
     id: "atlas",
     name: "Atlas",
@@ -57,11 +57,21 @@ const initialNodes: OrgNode[] = [
   },
 ];
 
+const STORAGE_KEY = "atlas-org-chart-nodes";
+
+function loadNodes(): OrgNode[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return defaultNodes;
+}
+
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } };
 
 export default function OrgChart() {
-  const [nodes, setNodes] = useState<OrgNode[]>(initialNodes);
+  const [nodes, setNodes] = useState<OrgNode[]>(loadNodes);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editingNode, setEditingNode] = useState<OrgNode | null>(null);
 
