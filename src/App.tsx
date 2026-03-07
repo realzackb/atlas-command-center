@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import Agents from "./pages/Agents";
+import OrgChartPage from "./pages/OrgChartPage";
 import Tasks from "./pages/Tasks";
 import Integrations from "./pages/Integrations";
 import Research from "./pages/Research";
