@@ -1,108 +1,156 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ListTodo, Plus, Filter, CheckCircle2, Clock, AlertCircle, ArrowRight } from "lucide-react";
+import { Plus, CheckCircle2, Clock, AlertCircle, Eye, Trash2, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+type Status = "backlog" | "in_progress" | "review" | "done";
+type Priority = "low" | "medium" | "high" | "urgent";
 
 interface Task {
   id: string;
   title: string;
+  description?: string;
   agent: string;
-  workspace: "personal" | "business";
-  status: "todo" | "in_progress" | "done";
-  priority: "low" | "medium" | "high" | "urgent";
+  status: Status;
+  priority: Priority;
   dueDate: string;
 }
 
-const mockTasks: Task[] = [
-  { id: "1", title: "Research testosterone optimization protocols", agent: "Personal Assistant", workspace: "personal", status: "in_progress", priority: "high", dueDate: "Today" },
-  { id: "2", title: "Draft Q1 campaign ad script", agent: "Business Executive", workspace: "business", status: "in_progress", priority: "urgent", dueDate: "Today" },
-  { id: "3", title: "Compile fitness supplement research", agent: "Personal Assistant", workspace: "personal", status: "todo", priority: "medium", dueDate: "Tomorrow" },
-  { id: "4", title: "Write client onboarding email sequence", agent: "Business Executive", workspace: "business", status: "todo", priority: "high", dueDate: "Mar 8" },
-  { id: "5", title: "Generate YouTube video script ideas", agent: "Business Executive", workspace: "business", status: "done", priority: "medium", dueDate: "Mar 5" },
-  { id: "6", title: "Update health tracking dashboard data", agent: "Personal Assistant", workspace: "personal", status: "done", priority: "low", dueDate: "Mar 4" },
-  { id: "7", title: "Research competitor ad strategies", agent: "Business Executive", workspace: "business", status: "todo", priority: "high", dueDate: "Mar 9" },
-  { id: "8", title: "Create short-form content calendar", agent: "Business Executive", workspace: "business", status: "in_progress", priority: "medium", dueDate: "Mar 7" },
+const STORAGE_KEY = "atlas-tasks";
+
+const defaultTasks: Task[] = [
+  { id: "1", title: "Research testosterone optimization protocols", agent: "Personal Assistant", status: "in_progress", priority: "high", dueDate: "Today" },
+  { id: "2", title: "Draft Q1 campaign ad script", agent: "Business Executive", status: "in_progress", priority: "urgent", dueDate: "Today" },
+  { id: "3", title: "Compile fitness supplement research", agent: "Personal Assistant", status: "backlog", priority: "medium", dueDate: "Tomorrow" },
+  { id: "4", title: "Write client onboarding email sequence", agent: "Business Executive", status: "backlog", priority: "high", dueDate: "Mar 8" },
+  { id: "5", title: "Generate YouTube video script ideas", agent: "Business Executive", status: "done", priority: "medium", dueDate: "Mar 5" },
+  { id: "6", title: "Update health tracking dashboard data", agent: "Personal Assistant", status: "done", priority: "low", dueDate: "Mar 4" },
+  { id: "7", title: "Research competitor ad strategies", agent: "Business Executive", status: "review", priority: "high", dueDate: "Mar 9" },
+  { id: "8", title: "Create short-form content calendar", agent: "Business Executive", status: "review", priority: "medium", dueDate: "Mar 7" },
 ];
 
-const priorityColors: Record<string, string> = {
+function loadTasks(): Task[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return defaultTasks;
+}
+
+const columns: { key: Status; label: string; icon: React.ElementType; color: string }[] = [
+  { key: "backlog", label: "Backlog", icon: AlertCircle, color: "text-muted-foreground" },
+  { key: "in_progress", label: "In Progress", icon: Clock, color: "text-primary" },
+  { key: "review", label: "Review", icon: Eye, color: "text-atlas-warning" },
+  { key: "done", label: "Done", icon: CheckCircle2, color: "text-atlas-success" },
+];
+
+const priorityColors: Record<Priority, string> = {
   low: "text-muted-foreground border-muted-foreground/30",
   medium: "text-primary border-primary/30",
   high: "text-atlas-warning border-atlas-warning/30",
   urgent: "text-destructive border-destructive/30",
 };
 
-const statusIcons: Record<string, React.ElementType> = {
-  todo: AlertCircle,
-  in_progress: Clock,
-  done: CheckCircle2,
-};
-
-const statusLabels: Record<string, string> = {
-  todo: "To Do",
-  in_progress: "In Progress",
-  done: "Done",
-};
-
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.03 } } };
 const item = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } };
 
 export default function Tasks() {
-  const [workspace, setWorkspace] = useState<"all" | "personal" | "business">("all");
+  const [tasks, setTasks] = useState<Task[]>(loadTasks);
+  const [addOpen, setAddOpen] = useState(false);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [newTask, setNewTask] = useState({ title: "", description: "", agent: "", priority: "medium" as Priority, dueDate: "", status: "backlog" as Status });
 
-  const filtered = mockTasks.filter((t) => workspace === "all" || t.workspace === workspace);
+  const save = (updated: Task[]) => {
+    setTasks(updated);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  };
 
-  const byStatus = (status: string) => filtered.filter((t) => t.status === status);
+  const addTask = () => {
+    if (!newTask.title.trim()) return;
+    const task: Task = { ...newTask, id: crypto.randomUUID() };
+    save([...tasks, task]);
+    setNewTask({ title: "", description: "", agent: "", priority: "medium", dueDate: "", status: "backlog" });
+    setAddOpen(false);
+  };
+
+  const deleteTask = (id: string) => save(tasks.filter((t) => t.id !== id));
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent, status: Status) => {
+    e.preventDefault();
+    if (!draggedId) return;
+    save(tasks.map((t) => (t.id === draggedId ? { ...t, status } : t)));
+    setDraggedId(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 max-w-7xl">
+    <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 max-w-full">
       <motion.div variants={item} className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Task Management</h1>
-          <p className="text-sm text-muted-foreground mt-1">ClickUp tasks across personal & business workspaces</p>
+          <h1 className="text-2xl font-bold text-foreground">Task Board</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage tasks across your AI workforce</p>
         </div>
-        <Button size="sm" className="gap-2">
+        <Button size="sm" className="gap-2" onClick={() => setAddOpen(true)}>
           <Plus className="h-4 w-4" /> New Task
         </Button>
       </motion.div>
 
-      <motion.div variants={item}>
-        <Tabs value={workspace} onValueChange={(v) => setWorkspace(v as any)}>
-          <TabsList>
-            <TabsTrigger value="all">All Tasks</TabsTrigger>
-            <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="business">Business</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </motion.div>
-
-      {/* Kanban-style columns */}
-      <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(["todo", "in_progress", "done"] as const).map((status) => {
-          const StatusIcon = statusIcons[status];
-          const tasks = byStatus(status);
+      <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {columns.map((col) => {
+          const colTasks = tasks.filter((t) => t.status === col.key);
+          const ColIcon = col.icon;
           return (
-            <div key={status} className="space-y-3">
+            <div
+              key={col.key}
+              className="space-y-3 min-h-[200px]"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, col.key)}
+            >
               <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <StatusIcon className={`h-4 w-4 ${status === "done" ? "text-atlas-success" : status === "in_progress" ? "text-primary" : "text-muted-foreground"}`} />
-                {statusLabels[status]}
-                <Badge variant="secondary" className="text-[10px] ml-auto">{tasks.length}</Badge>
+                <ColIcon className={`h-4 w-4 ${col.color}`} />
+                {col.label}
+                <Badge variant="secondary" className="text-[10px] ml-auto">{colTasks.length}</Badge>
               </div>
               <div className="space-y-2">
-                {tasks.map((task) => (
-                  <div key={task.id} className="glass-card p-3 hover:border-primary/30 transition-colors cursor-pointer">
-                    <div className="text-sm font-medium text-foreground mb-2">{task.title}</div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={`text-[10px] ${priorityColors[task.priority]}`}>{task.priority}</Badge>
-                        <Badge variant="secondary" className="text-[10px]">{task.workspace}</Badge>
+                {colTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, task.id)}
+                    className={`glass-card p-3 cursor-grab active:cursor-grabbing transition-all hover:border-primary/30 ${draggedId === task.id ? "opacity-50" : ""}`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <GripVertical className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-foreground mb-2">{task.title}</div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className={`text-[10px] ${priorityColors[task.priority]}`}>{task.priority}</Badge>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground">{task.dueDate}</span>
+                        </div>
+                        {task.agent && (
+                          <div className="text-[10px] text-muted-foreground mt-2">{task.agent}</div>
+                        )}
                       </div>
-                      <span className="text-[10px] text-muted-foreground">{task.dueDate}</span>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground">
-                      <ArrowRight className="h-2.5 w-2.5" />
-                      {task.agent}
+                      <button onClick={() => deleteTask(task.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -111,6 +159,64 @@ export default function Tasks() {
           );
         })}
       </motion.div>
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>New Task</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} placeholder="Task title" />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} placeholder="Optional description" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Agent</Label>
+                <Input value={newTask.agent} onChange={(e) => setNewTask({ ...newTask, agent: e.target.value })} placeholder="Assigned agent" />
+              </div>
+              <div className="space-y-2">
+                <Label>Due Date</Label>
+                <Input value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} placeholder="e.g. Tomorrow" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select value={newTask.priority} onValueChange={(v) => setNewTask({ ...newTask, priority: v as Priority })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Column</Label>
+                <Select value={newTask.status} onValueChange={(v) => setNewTask({ ...newTask, status: v as Status })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="backlog">Backlog</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="review">Review</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
+            <Button onClick={addTask}>Add Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
