@@ -12,6 +12,7 @@ import CalendarPage from "./pages/CalendarPage";
 import Integrations from "./pages/Integrations";
 import Research from "./pages/Research";
 import Content from "./pages/Content";
+import DocsPage from "./pages/DocsPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 

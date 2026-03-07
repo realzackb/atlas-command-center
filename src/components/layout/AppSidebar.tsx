@@ -34,6 +34,7 @@ const navItems = [
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
   { title: "Research", url: "/research", icon: Search },
   { title: "Content", url: "/content", icon: FileText },
+  { title: "Docs", url: "/docs", icon: FileStack },
   { title: "Integrations", url: "/integrations", icon: Plug },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
