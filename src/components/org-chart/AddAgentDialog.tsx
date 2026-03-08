@@ -61,8 +61,9 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       tools: form.tools,
       guardrails: [],
       tasksCompleted: 0,
+      emoji: form.emoji,
     });
-    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [] });
+    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
     setOpen(false);
   };
 
