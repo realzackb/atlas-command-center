@@ -9,4 +9,5 @@ export interface OrgNode {
   guardrails: string[];
   tasksCompleted: number;
   parentId: string | null;
+  emoji?: string;
 }
