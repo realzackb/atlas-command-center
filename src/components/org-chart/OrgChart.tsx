@@ -30,6 +30,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["No deletion of files", "Requires approval for emails"],
     tasksCompleted: 142,
     parentId: null,
+    emoji: "⚡",
   },
   {
     id: "personal",
@@ -42,6 +43,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["Read-only Google Drive", "Personal ClickUp only"],
     tasksCompleted: 67,
     parentId: "atlas",
+    emoji: "🏋️",
   },
   {
     id: "business",
@@ -54,6 +56,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["No financial transactions", "Email drafts require review"],
     tasksCompleted: 89,
     parentId: "atlas",
+    emoji: "💼",
   },
 ];
 

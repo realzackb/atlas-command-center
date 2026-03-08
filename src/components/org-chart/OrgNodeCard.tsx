@@ -68,8 +68,14 @@ export function OrgNodeCard({ node, children, onEdit, onDelete, isRoot }: OrgNod
         </div>
 
         <div className="flex flex-col items-center text-center pt-2">
-          <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center mb-2">
-            {isRoot ? <Zap className="h-5 w-5 text-primary" /> : <Bot className="h-4 w-4 text-primary" />}
+          <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center mb-2 text-lg">
+            {node.emoji ? (
+              <span>{node.emoji}</span>
+            ) : isRoot ? (
+              <Zap className="h-5 w-5 text-primary" />
+            ) : (
+              <Bot className="h-4 w-4 text-primary" />
+            )}
           </div>
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-sm font-bold text-foreground">{node.name}</span>

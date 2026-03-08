@@ -40,6 +40,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
     team: "business" as OrgNode["team"],
     parentId: agents[0]?.id ?? null,
     tools: [] as string[],
+    emoji: "🤖",
   });
 
   const toggleTool = (tool: string) =>
