@@ -40,6 +40,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
     team: "business" as OrgNode["team"],
     parentId: agents[0]?.id ?? null,
     tools: [] as string[],
+    emoji: "🤖",
   });
 
   const toggleTool = (tool: string) =>
@@ -60,8 +61,9 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       tools: form.tools,
       guardrails: [],
       tasksCompleted: 0,
+      emoji: form.emoji,
     });
-    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [] });
+    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
     setOpen(false);
   };
 
@@ -77,9 +79,15 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
           <DialogTitle>Add Agent to Org Chart</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-2">
-          <div className="space-y-2">
-            <Label>Name</Label>
-            <Input placeholder="Agent name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+          <div className="grid grid-cols-[4rem_1fr] gap-4">
+            <div className="space-y-2">
+              <Label>Emoji</Label>
+              <Input className="text-center text-lg" value={form.emoji} onChange={(e) => setForm((p) => ({ ...p, emoji: e.target.value }))} maxLength={2} />
+            </div>
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input placeholder="Agent name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>Role</Label>

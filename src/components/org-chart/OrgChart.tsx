@@ -30,6 +30,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["No deletion of files", "Requires approval for emails"],
     tasksCompleted: 142,
     parentId: null,
+    emoji: "⚡",
   },
   {
     id: "personal",
@@ -42,6 +43,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["Read-only Google Drive", "Personal ClickUp only"],
     tasksCompleted: 67,
     parentId: "atlas",
+    emoji: "🏋️",
   },
   {
     id: "business",
@@ -54,6 +56,7 @@ const defaultNodes: OrgNode[] = [
     guardrails: ["No financial transactions", "Email drafts require review"],
     tasksCompleted: 89,
     parentId: "atlas",
+    emoji: "💼",
   },
 ];
 
@@ -190,8 +193,10 @@ export default function OrgChart() {
             {activeNode && (
               <div className="glass-card p-4 w-60 glow-blue ring-1 ring-primary/50">
                 <div className="flex flex-col items-center text-center">
-                  <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center mb-2">
-                    {activeNode.parentId === null ? (
+                  <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center mb-2 text-lg">
+                    {activeNode.emoji ? (
+                      <span>{activeNode.emoji}</span>
+                    ) : activeNode.parentId === null ? (
                       <Zap className="h-5 w-5 text-primary" />
                     ) : (
                       <Bot className="h-4 w-4 text-primary" />
