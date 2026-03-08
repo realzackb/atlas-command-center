@@ -79,9 +79,15 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
           <DialogTitle>Add Agent to Org Chart</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-2">
-          <div className="space-y-2">
-            <Label>Name</Label>
-            <Input placeholder="Agent name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+          <div className="grid grid-cols-[4rem_1fr] gap-4">
+            <div className="space-y-2">
+              <Label>Emoji</Label>
+              <Input className="text-center text-lg" value={form.emoji} onChange={(e) => setForm((p) => ({ ...p, emoji: e.target.value }))} maxLength={2} />
+            </div>
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input placeholder="Agent name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>Role</Label>
