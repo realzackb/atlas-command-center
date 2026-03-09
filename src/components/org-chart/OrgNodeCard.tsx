@@ -83,6 +83,21 @@ export function OrgNodeCard({ node, children, onEdit, onDelete, isRoot }: OrgNod
             <div className={`h-1.5 w-1.5 rounded-full ${statusColor}`} />
           </div>
           <span className="text-[10px] text-muted-foreground">{node.role}</span>
+          {node.rolePrompt && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-[9px] text-primary/70 cursor-help mt-1 line-clamp-2 max-w-[200px]">
+                    {node.description}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-sm text-xs leading-relaxed">
+                  <p className="font-semibold mb-1">Role Prompt:</p>
+                  <p>{node.rolePrompt}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
           <div className="flex gap-1 mt-2 flex-wrap justify-center">
             <Badge variant="outline" className="text-[10px]">{node.team}</Badge>
             <Badge variant="secondary" className="text-[10px]">{node.tasksCompleted} tasks</Badge>
