@@ -67,6 +67,15 @@ export function EditAgentDialog({ node, agents, onSave, onClose }: EditAgentDial
             <Label>Description</Label>
             <Input value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
           </div>
+          <div className="space-y-2">
+            <Label>Role Prompt</Label>
+            <textarea
+              className="w-full min-h-[80px] rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              placeholder="Detailed instructions Atlas will use when delegating to this agent..."
+              value={form.rolePrompt || ""}
+              onChange={(e) => setForm((p) => ({ ...p, rolePrompt: e.target.value }))}
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Team</Label>
@@ -76,6 +85,11 @@ export function EditAgentDialog({ node, agents, onSave, onClose }: EditAgentDial
                   <SelectItem value="core">Core</SelectItem>
                   <SelectItem value="personal">Personal</SelectItem>
                   <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="media">Media</SelectItem>
+                  <SelectItem value="content">Content</SelectItem>
+                  <SelectItem value="research">Research</SelectItem>
+                  <SelectItem value="ops">Operations</SelectItem>
+                  <SelectItem value="sales">Sales</SelectItem>
                 </SelectContent>
               </Select>
             </div>
