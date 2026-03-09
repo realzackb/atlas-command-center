@@ -108,6 +108,11 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
                   <SelectItem value="core">Core</SelectItem>
                   <SelectItem value="personal">Personal</SelectItem>
                   <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="media">Media</SelectItem>
+                  <SelectItem value="content">Content</SelectItem>
+                  <SelectItem value="research">Research</SelectItem>
+                  <SelectItem value="ops">Operations</SelectItem>
+                  <SelectItem value="sales">Sales</SelectItem>
                 </SelectContent>
               </Select>
             </div>
