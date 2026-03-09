@@ -3,6 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Bot, GripVertical, Pencil, Trash2, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { OrgNode } from "./types";
 
 interface OrgNodeCardProps {
