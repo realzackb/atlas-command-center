@@ -56,6 +56,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       name: form.name,
       role: form.role,
       description: form.description,
+      rolePrompt: form.rolePrompt,
       team: form.team,
       parentId: form.parentId,
       status: "offline",
@@ -64,7 +65,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       tasksCompleted: 0,
       emoji: form.emoji,
     });
-    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
+    setForm({ name: "", role: "", description: "", rolePrompt: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
     setOpen(false);
   };
 
