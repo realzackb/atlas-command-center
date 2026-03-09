@@ -37,6 +37,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
     name: "",
     role: "",
     description: "",
+    rolePrompt: "",
     team: "business" as OrgNode["team"],
     parentId: agents[0]?.id ?? null,
     tools: [] as string[],
@@ -55,6 +56,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       name: form.name,
       role: form.role,
       description: form.description,
+      rolePrompt: form.rolePrompt,
       team: form.team,
       parentId: form.parentId,
       status: "offline",
@@ -63,7 +65,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
       tasksCompleted: 0,
       emoji: form.emoji,
     });
-    setForm({ name: "", role: "", description: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
+    setForm({ name: "", role: "", description: "", rolePrompt: "", team: "business", parentId: agents[0]?.id ?? null, tools: [], emoji: "🤖" });
     setOpen(false);
   };
 
@@ -97,6 +99,15 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
             <Label>Description</Label>
             <Input placeholder="What does this agent do?" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
           </div>
+          <div className="space-y-2">
+            <Label>Role Prompt</Label>
+            <textarea
+              className="w-full min-h-[80px] rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              placeholder="Detailed instructions Atlas will use when delegating to this agent..."
+              value={form.rolePrompt}
+              onChange={(e) => setForm((p) => ({ ...p, rolePrompt: e.target.value }))}
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Team</Label>
@@ -106,6 +117,11 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
                   <SelectItem value="core">Core</SelectItem>
                   <SelectItem value="personal">Personal</SelectItem>
                   <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="media">Media</SelectItem>
+                  <SelectItem value="content">Content</SelectItem>
+                  <SelectItem value="research">Research</SelectItem>
+                  <SelectItem value="ops">Operations</SelectItem>
+                  <SelectItem value="sales">Sales</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -3,7 +3,8 @@ export interface OrgNode {
   name: string;
   role: string;
   description: string;
-  team: "personal" | "business" | "core";
+  rolePrompt: string;
+  team: "personal" | "business" | "core" | "media" | "content" | "research" | "ops" | "sales";
   status: "online" | "offline" | "idle";
   tools: string[];
   guardrails: string[];
