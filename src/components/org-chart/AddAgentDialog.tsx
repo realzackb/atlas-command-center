@@ -37,6 +37,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
     name: "",
     role: "",
     description: "",
+    rolePrompt: "",
     team: "business" as OrgNode["team"],
     parentId: agents[0]?.id ?? null,
     tools: [] as string[],
