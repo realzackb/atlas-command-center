@@ -252,12 +252,18 @@ const defaultNodes: OrgNode[] = [
 ];
 
 const STORAGE_KEY = "atlas-org-chart-nodes";
+const STORAGE_VERSION_KEY = "atlas-org-chart-version";
+const CURRENT_VERSION = "2";
 
 function loadNodes(): OrgNode[] {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
+    const version = localStorage.getItem(STORAGE_VERSION_KEY);
+    if (version === CURRENT_VERSION) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    }
   } catch {}
+  localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_VERSION);
   return defaultNodes;
 }
 
