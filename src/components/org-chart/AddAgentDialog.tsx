@@ -107,6 +107,7 @@ export function AddAgentDialog({ agents, onAdd }: AddAgentDialogProps) {
               value={form.rolePrompt}
               onChange={(e) => setForm((p) => ({ ...p, rolePrompt: e.target.value }))}
             />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Team</Label>
